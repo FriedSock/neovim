@@ -1006,7 +1006,7 @@ static FDEC(translate_expr, const ExpressionNode *const expr,
     }
     case kExprSimpleVariableName: {
       const char_u *start;
-      WS("vim.subscript.subscript(state, ");
+      WS("vim.subscript.subscript(state, false, ");
       F(translate_scope, &start, expr, TS_ONLY_SEGMENT | (is_funccall
                                                              ? TS_FUNCCALL
                                                              : 0));
@@ -1017,7 +1017,7 @@ static FDEC(translate_expr, const ExpressionNode *const expr,
       break;
     }
     case kExprVariableName: {
-      WS("vim.subscript.subscript(state, ");
+      WS("vim.subscript.subscript(state, false, ");
       F(translate_varname, expr, FALSE);
       WS(")");
       break;
@@ -1063,11 +1063,7 @@ static FDEC(translate_expr, const ExpressionNode *const expr,
         }
         case kExprSubscript: {
           if (expr->children->next->next == NULL) {
-            if (is_funccall) {
-              WS("vim.subscript.func(state");
-            } else {
-              WS("vim.subscript.subscript(state");
-            }
+            WS("vim.subscript.subscript(state, true");
           } else {
             WS("vim.subscript.slice(state");
           }
@@ -1183,7 +1179,7 @@ static FDEC(translate_function_definition, const TranslateFuncArgs *const args)
   const char_u **data =
       (const char_u **) args->node->args[ARG_FUNC_ARGS].arg.strs.ga_data;
   size_t size = (size_t) args->node->args[ARG_FUNC_ARGS].arg.strs.ga_len;
-  WS("function(state");
+  WS("function(state, self");
   for (i = 0; i < size; i++) {
     WS(", ");
     W(data[i]);
@@ -1195,7 +1191,7 @@ static FDEC(translate_function_definition, const TranslateFuncArgs *const args)
   if (args->node->children != NULL) {
     WINDENT(args->indent + 1);
     // TODO; dump information about function call
-    WS("state = vim.state.enter_function(state, {})\n");
+    WS("state = vim.state.enter_function(state, self, {})\n");
     F_FUNC(translate_nodes, args->node->children, args->indent + 1);
   } else {
     // Empty function: do not bother creating scope dictionaries, just return 

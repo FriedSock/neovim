@@ -251,3 +251,29 @@ describe(':function definition', function()
     1, 2, 3, 2, {4, 5}, 0,
   })
 end)
+
+describe(':for loops', function()
+  ito('Iterates over a list', [[
+    for i in [1, 2, 3]
+      echo i
+    endfor
+    echo i
+    unlet i
+  ]], {1, 2, 3, 3})
+  for _, v in ipairs({{'dictionary', '{}'},
+                      {'string', '""'},
+                      {'number', '0'},
+                      {'funcref', 'function("string")'},
+                      {'float', '0.0'}}) do
+    ito('Fails to iterate over a ' .. v[1], string.format([[
+      try
+        for i in %s
+          echo i
+        endfor
+        echo i
+      catch
+        echo v:exception
+      endtry
+    ]], v[2]), {'E714: List required'})
+  end
+end)

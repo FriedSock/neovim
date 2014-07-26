@@ -54,8 +54,9 @@ char *parse_cmd_test(const char *arg, const uint_least8_t flags,
     free(line);
   } else {
     if ((node = parse_cmd_sequence(o, position, (LineGetter) fgetline_string,
-                                   (void *) pp)) == NULL)
+                                   (void *) pp, true)) == NULL) {
       return NULL;
+    }
   }
 
   if (out) {

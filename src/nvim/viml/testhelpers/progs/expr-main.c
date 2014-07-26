@@ -118,7 +118,7 @@ void free_cmd(CommandNode *cmd)
 CommandNode *parse_cmd_sequence(CommandParserOptions o,
                                 CommandPosition position,
                                 LineGetter fgetline,
-                                void *cookie)
+                                void *cookie, bool can_free)
 {
   return NULL;
 }

@@ -1126,10 +1126,6 @@ err = {
     end
   end,
 
-  propagate = function(state, err)
-    error(err)
-  end,
-
   unpack_position = function(position)
     local lnr, col, cmd = position:match('(%d+):(%d+):(.*)')
     lnr = tonumber(lnr)
